@@ -1,4 +1,5 @@
 import com.jcraft.jsch.*;
+import java.io.File;
 
 
 public class SSHManager {
@@ -20,23 +21,32 @@ public class SSHManager {
 	public void connectar() throws JSchException {
 	
 		JSch jsch = new JSch();
+		
+		/*
+		 * Ruta de archivo known_hosts
+		 * */
+		String sshDir = System.getProperty("user.home") + File.separator + ".ssh";
+		new File(sshDir); //Carpeta oculta si no existe
+		jsch.setKnownHosts(sshDir+ File.separator + "known_hosts");
+		
+		
 		session = jsch.getSession(user, host, 22);
 		session.setPassword(password);
 		
-		//Para saltar la verificacion de huella digital (StrictHostKeyChecking)
-        java.util.Properties config = new java.util.Properties();
-        config.put("StrictHostKeyChecking", "no");
-        session.setConfig(config);
-      
-        /**
-         * Si no tiene la huella digital del servidor jsch no permite la conexion al no poder validar que es quien dice ser
-         * de esta manera con java.util.Properties creamos un objeto configuracion clave-valor
-         * con la instruccion especifica a StrictHostKeyChecking de que no debe hacer dicha validacion
-         * y se la pasamos a la configuracion de session
-         * **/
-        
-        session.connect();
-        System.out.println("Conexion establecida");
+		// Clase de seguridad personalizada
+		session.setUserInfo(new SeguridadSSH());
+			
+		//Timeout de 10 segundos
+		session.connect(10000);
+		System.out.print("Conexión segura establecida con " + host);
+	}
+	
+	public void Desconectar() {
+		//Si session no es nulo y esta coenctado
+		if session != null && session.isConnected(){
+			session.disconnect();
+			System.out.println("Desconectado del Servidor");
+		}
 	}
 	
 	

@@ -1,4 +1,5 @@
 import com.jcraft.jsch.UserInfo;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
 public class SeguridadSSH implements UserInfo {
@@ -16,7 +17,7 @@ public class SeguridadSSH implements UserInfo {
 	@Override
 	public void showMessage(String message) {
 		JOptionPane.showMessageDialog(null, message);
-		//TODO inseguro de cuando sale este mensaje
+		//Para configuracion de Banner SSH de ubuntu
 	}
 	
 	// Métodos obligatorios de la interfaz que no usare porque ya le pase la contraseña directamente a la 'Session'
@@ -31,9 +32,5 @@ public class SeguridadSSH implements UserInfo {
 
 	@Override
 	public boolean promptPassphrase(String message) {return false;}
-
-
-
-
 
 }
