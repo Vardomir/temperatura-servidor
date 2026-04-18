@@ -26,7 +26,7 @@ public class SSHManager {
 		 * Ruta de archivo known_hosts
 		 * */
 		String sshDir = System.getProperty("user.home") + File.separator + ".ssh";
-		new File(sshDir); //Carpeta oculta si no existe
+		new File(sshDir).mkdir(); //Carpeta oculta si no existe
 		jsch.setKnownHosts(sshDir+ File.separator + "known_hosts");
 		
 		
@@ -39,6 +39,12 @@ public class SSHManager {
 		//Timeout de 10 segundos
 		session.connect(10000);
 		System.out.print("Conexión segura establecida con " + host);
+		
+		HostKeyRepository hkr = jsch.getHostKeyRepository();
+		if (hkr instanceof KnownHosts) {
+	        // Esto escribe físicamente las nuevas claves en el archivo known_hosts
+	        ((KnownHosts) hkr).sync(); 
+	        System.out.println("Archivo known_hosts actualizado en disco.");
 	}
 	
 	public void Desconectar() {
